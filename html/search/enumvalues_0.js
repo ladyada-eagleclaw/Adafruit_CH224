@@ -1,0 +1,16 @@
+var searchData=
+[
+  ['ch224_5fprotocol_5favs_5favailable',['CH224_PROTOCOL_AVS_AVAILABLE',['../_adafruit___c_h224_8h.html#afbfb71136afae5d566ddd13403e3c795aecd6d9bb514a41f6761de7f7b7e51651',1,'Adafruit_CH224.h']]],
+  ['ch224_5fprotocol_5fbc',['CH224_PROTOCOL_BC',['../_adafruit___c_h224_8h.html#afbfb71136afae5d566ddd13403e3c795abdce390df2df449b6f66d39738ca4c82',1,'Adafruit_CH224.h']]],
+  ['ch224_5fprotocol_5fepr',['CH224_PROTOCOL_EPR',['../_adafruit___c_h224_8h.html#afbfb71136afae5d566ddd13403e3c795ae38a66f8914fec198b99512feca3de01',1,'Adafruit_CH224.h']]],
+  ['ch224_5fprotocol_5fepr_5favailable',['CH224_PROTOCOL_EPR_AVAILABLE',['../_adafruit___c_h224_8h.html#afbfb71136afae5d566ddd13403e3c795a4a49553cab141273e07cdeeab7b67429',1,'Adafruit_CH224.h']]],
+  ['ch224_5fprotocol_5fpd',['CH224_PROTOCOL_PD',['../_adafruit___c_h224_8h.html#afbfb71136afae5d566ddd13403e3c795a5b555cfdb0804f52ac1c69c559802589',1,'Adafruit_CH224.h']]],
+  ['ch224_5fprotocol_5fqc2',['CH224_PROTOCOL_QC2',['../_adafruit___c_h224_8h.html#afbfb71136afae5d566ddd13403e3c795aa2c7206fe425743a188d067bd446fd4b',1,'Adafruit_CH224.h']]],
+  ['ch224_5fprotocol_5fqc3',['CH224_PROTOCOL_QC3',['../_adafruit___c_h224_8h.html#afbfb71136afae5d566ddd13403e3c795ac07ef8544d2c14c7f1143d33c390bc84',1,'Adafruit_CH224.h']]],
+  ['ch224_5fvoltage_5f12v',['CH224_VOLTAGE_12V',['../_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086ea1ff880c213d7769bcaff89cfaed3fe88',1,'Adafruit_CH224.h']]],
+  ['ch224_5fvoltage_5f15v',['CH224_VOLTAGE_15V',['../_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086ea563b61a7d2605afb4e3bae8891220ce8',1,'Adafruit_CH224.h']]],
+  ['ch224_5fvoltage_5f20v',['CH224_VOLTAGE_20V',['../_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086eaddce345112767506259d7d1f305a570d',1,'Adafruit_CH224.h']]],
+  ['ch224_5fvoltage_5f28v',['CH224_VOLTAGE_28V',['../_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086ea44d4e2e0cdc6549a15b7c19d41fabdaa',1,'Adafruit_CH224.h']]],
+  ['ch224_5fvoltage_5f5v',['CH224_VOLTAGE_5V',['../_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086ea8f492e81845e65dc66534eddd9fa4a3c',1,'Adafruit_CH224.h']]],
+  ['ch224_5fvoltage_5f9v',['CH224_VOLTAGE_9V',['../_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086ea93b6c0688c9585ff8578a6dbe8e81404',1,'Adafruit_CH224.h']]]
+];
