@@ -25,7 +25,9 @@
 
 #include "Adafruit_CH224.h"
 
+/** Voltage control register value that selects PPS mode. */
 #define CH224_PPS_MODE 6
+/** Voltage control register value that selects AVS mode. */
 #define CH224_AVS_MODE 7
 
 /**************************************************************************/
