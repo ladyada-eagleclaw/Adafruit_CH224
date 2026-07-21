@@ -172,6 +172,104 @@ bool Adafruit_CH224::getMaxCurrent(float* amps) {
 
 /**************************************************************************/
 /*!
+    @brief Checks whether the USB PD source advertises a fixed voltage.
+    @param voltage Fixed voltage selection to find.
+    @return True when the requested fixed voltage appears in the source
+    capabilities. A failed I2C read also returns false.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::isVoltageAvailable(ch224_voltage_t voltage) {
+  float amps = 0.0F;
+  return findFixedSourceCapability(voltage, &amps);
+}
+
+/**************************************************************************/
+/*!
+    @brief Reads the advertised current for a fixed USB PD source voltage.
+    @param voltage Fixed voltage selection to find.
+    @param amps Pointer that receives the advertised current in amperes.
+    @return True when the requested fixed voltage appears in the source
+    capabilities and its current was returned.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::getAvailableCurrent(ch224_voltage_t voltage, float* amps) {
+  return findFixedSourceCapability(voltage, amps);
+}
+
+/**************************************************************************/
+/*!
+    @brief Finds a fixed supply PDO in the USB PD Source_Capabilities message.
+    @param voltage Fixed voltage selection to find.
+    @param amps Pointer that receives the advertised current in amperes.
+    @return True when the requested fixed PDO was found.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::findFixedSourceCapability(ch224_voltage_t voltage,
+                                               float* amps) {
+  if (!amps) {
+    return false;
+  }
+
+  uint16_t targetVoltageUnits = 0;
+  switch (voltage) {
+    case CH224_VOLTAGE_5V:
+      targetVoltageUnits = 100;
+      break;
+    case CH224_VOLTAGE_9V:
+      targetVoltageUnits = 180;
+      break;
+    case CH224_VOLTAGE_12V:
+      targetVoltageUnits = 240;
+      break;
+    case CH224_VOLTAGE_15V:
+      targetVoltageUnits = 300;
+      break;
+    case CH224_VOLTAGE_20V:
+      targetVoltageUnits = 400;
+      break;
+    case CH224_VOLTAGE_28V:
+      targetVoltageUnits = 560;
+      break;
+    default:
+      return false;
+  }
+
+  uint8_t powerData[CH224_POWER_DATA_LENGTH];
+  if (!readPowerData(powerData)) {
+    return false;
+  }
+
+  uint16_t messageHeader = powerData[0] | ((uint16_t)powerData[1] << 8);
+  uint8_t objectCount = (messageHeader >> 12) & 0x07;
+  if (objectCount == 0 || (2 + objectCount * 4) > CH224_POWER_DATA_LENGTH) {
+    return false;
+  }
+
+  for (uint8_t index = 0; index < objectCount; index++) {
+    uint8_t offset = 2 + index * 4;
+    uint32_t pdo = powerData[offset];
+    pdo |= (uint32_t)powerData[offset + 1] << 8;
+    pdo |= (uint32_t)powerData[offset + 2] << 16;
+    pdo |= (uint32_t)powerData[offset + 3] << 24;
+
+    uint8_t supplyType = (pdo >> 30) & 0x03;
+    if (supplyType != 0) {
+      continue;
+    }
+
+    uint16_t voltageUnits = (pdo >> 10) & 0x03FF;
+    if (voltageUnits == targetVoltageUnits) {
+      uint16_t currentUnits = pdo & 0x03FF;
+      *amps = currentUnits * 0.01F;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**************************************************************************/
+/*!
     @brief Reads raw USB PD source capability bytes.
     @param data Buffer that receives the source capability data.
     @param length Number of bytes to read, from 1 through 48.

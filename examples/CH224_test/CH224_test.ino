@@ -51,6 +51,26 @@ void loop() {
     Serial.println("Maximum negotiated current is unavailable");
   }
 
+  const ch224_voltage_t fixedVoltages[] = {
+      CH224_VOLTAGE_5V,  CH224_VOLTAGE_9V,  CH224_VOLTAGE_12V,
+      CH224_VOLTAGE_15V, CH224_VOLTAGE_20V, CH224_VOLTAGE_28V};
+  const uint8_t voltageValues[] = {5, 9, 12, 15, 20, 28};
+
+  Serial.println("Available fixed PD voltages:");
+  for (uint8_t index = 0; index < 6; index++) {
+    Serial.print(voltageValues[index]);
+    Serial.print(" V: ");
+
+    float availableAmps = 0.0;
+    if (ch224.getAvailableCurrent(fixedVoltages[index], &availableAmps)) {
+      Serial.print("available at ");
+      Serial.print(availableAmps, 2);
+      Serial.println(" A");
+    } else {
+      Serial.println("unavailable");
+    }
+  }
+
   Serial.println();
   delay(1000);
 }

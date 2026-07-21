@@ -6,4 +6,6 @@ setVoltage	KEYWORD2
 setPPSVoltage	KEYWORD2
 setAVSVoltage	KEYWORD2
 getMaxCurrent	KEYWORD2
+isVoltageAvailable	KEYWORD2
+getAvailableCurrent	KEYWORD2
 readPowerData	KEYWORD2
