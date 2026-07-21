@@ -78,6 +78,12 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224.html">Adafruit_CH224</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Driver for the WCH CH224A and CH224Q USB PD sink controllers.  <a href="class_adafruit___c_h224.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224_a.html">Adafruit_CH224A</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Driver for the fixed-voltage CH224A USB PD sink controller.  <a href="class_adafruit___c_h224_a.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224_q.html">Adafruit_CH224Q</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Driver for the programmable CH224Q USB PD sink controller.  <a href="class_adafruit___c_h224_q.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
@@ -114,6 +120,11 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
+<tr class="memitem:a41af47feda09e7fc0b7f304aa2e62e84"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_adafruit___c_h224_8h.html#a41af47feda09e7fc0b7f304aa2e62e84">ch224_variant_t</a> { <a class="el" href="_adafruit___c_h224_8h.html#a41af47feda09e7fc0b7f304aa2e62e84a6db321fe152dcfe8936ac9bfb39fc3d5">CH224_VARIANT_UNKNOWN</a> = 0, 
+<a class="el" href="_adafruit___c_h224_8h.html#a41af47feda09e7fc0b7f304aa2e62e84a373d0bd591dfd5663b0d6201251f1300">CH224_VARIANT_A</a>, 
+<a class="el" href="_adafruit___c_h224_8h.html#a41af47feda09e7fc0b7f304aa2e62e84ab17b15417ffca263e960b0e4ab638e11">CH224_VARIANT_Q</a>
+ }</td></tr>
+<tr class="separator:a41af47feda09e7fc0b7f304aa2e62e84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95de0d08397a314e474ab5d8c88e086e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086e">ch224_voltage_t</a> { <br />
 &#160;&#160;<a class="el" href="_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086ea8f492e81845e65dc66534eddd9fa4a3c">CH224_VOLTAGE_5V</a> = 0, 
 <a class="el" href="_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086ea93b6c0688c9585ff8578a6dbe8e81404">CH224_VOLTAGE_9V</a> = 1, 
@@ -185,7 +196,7 @@ Enumerations</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Default address used by begin(). </p>
+<p>Legacy default address constant for the CH224A. </p>
 
 </div>
 </div>
@@ -370,6 +381,29 @@ Enumerations</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a41af47feda09e7fc0b7f304aa2e62e84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41af47feda09e7fc0b7f304aa2e62e84">&#9670;&nbsp;</a></span>ch224_variant_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="_adafruit___c_h224_8h.html#a41af47feda09e7fc0b7f304aa2e62e84">ch224_variant_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Supported CH224 silicon variants. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a41af47feda09e7fc0b7f304aa2e62e84a6db321fe152dcfe8936ac9bfb39fc3d5"></a>CH224_VARIANT_UNKNOWN&#160;</td><td class="fielddoc"><p>Variant could not be identified. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a41af47feda09e7fc0b7f304aa2e62e84a373d0bd591dfd5663b0d6201251f1300"></a>CH224_VARIANT_A&#160;</td><td class="fielddoc"><p>CH224A fixed-voltage controller. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a41af47feda09e7fc0b7f304aa2e62e84ab17b15417ffca263e960b0e4ab638e11"></a>CH224_VARIANT_Q&#160;</td><td class="fielddoc"><p>CH224Q controller with PPS and AVS registers. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 <a id="a95de0d08397a314e474ab5d8c88e086e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a95de0d08397a314e474ab5d8c88e086e">&#9670;&nbsp;</a></span>ch224_voltage_t</h2>
 
