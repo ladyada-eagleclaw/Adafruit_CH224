@@ -94,11 +94,13 @@ class Adafruit_CH224 {
   bool setPPSVoltage(float volts);
   bool setAVSVoltage(float volts);
   bool getMaxCurrent(float* amps);
+  bool isPPSAvailable();
   bool isVoltageAvailable(ch224_voltage_t voltage);
   bool getAvailableCurrent(ch224_voltage_t voltage, float* amps);
   bool readPowerData(uint8_t* data, size_t length = CH224_POWER_DATA_LENGTH);
 
  private:
+  bool readSourceCapabilities(uint8_t* powerData, uint8_t* objectCount);
   bool findFixedSourceCapability(ch224_voltage_t voltage, float* amps);
   bool readRegister(uint8_t address, uint8_t* value);
   bool writeRegister(uint8_t address, uint8_t value);

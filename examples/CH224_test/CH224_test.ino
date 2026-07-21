@@ -2,6 +2,22 @@
 
 Adafruit_CH224 ch224;
 
+void printActivity(bool active) {
+  if (active) {
+    Serial.println("active");
+  } else {
+    Serial.println("inactive");
+  }
+}
+
+void printAvailability(bool available) {
+  if (available) {
+    Serial.println("available");
+  } else {
+    Serial.println("unavailable");
+  }
+}
+
 void setup() {
   Serial.begin(115200);
   while (!Serial) {
@@ -33,14 +49,27 @@ void loop() {
   Serial.print("Status: 0x");
   Serial.println(status, HEX);
 
-  Serial.print("USB PD active: ");
-  Serial.println((status & CH224_PROTOCOL_PD) ? "yes" : "no");
+  Serial.println("Protocol activity:");
+  Serial.print("  BC: ");
+  printActivity(status & CH224_PROTOCOL_BC);
+  Serial.print("  QC 2.0: ");
+  printActivity(status & CH224_PROTOCOL_QC2);
+  Serial.print("  QC 3.0: ");
+  printActivity(status & CH224_PROTOCOL_QC3);
+  Serial.print("  USB PD: ");
+  printActivity(status & CH224_PROTOCOL_PD);
+  Serial.print("  EPR contract: ");
+  printActivity(status & CH224_PROTOCOL_EPR);
 
-  Serial.print("EPR available: ");
-  Serial.println((status & CH224_PROTOCOL_EPR_AVAILABLE) ? "yes" : "no");
-
-  Serial.print("AVS available: ");
-  Serial.println((status & CH224_PROTOCOL_AVS_AVAILABLE) ? "yes" : "no");
+  Serial.println("Power mode availability:");
+  Serial.print("  Fixed PD PDOs: ");
+  printAvailability(ch224.isVoltageAvailable(CH224_VOLTAGE_5V));
+  Serial.print("  PPS APDO: ");
+  printAvailability(ch224.isPPSAvailable());
+  Serial.print("  EPR source: ");
+  printAvailability(status & CH224_PROTOCOL_EPR_AVAILABLE);
+  Serial.print("  AVS source: ");
+  printAvailability(status & CH224_PROTOCOL_AVS_AVAILABLE);
 
   float amps = 0.0;
   if (ch224.getMaxCurrent(&amps)) {

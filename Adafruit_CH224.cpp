@@ -29,6 +29,10 @@
 #define CH224_PPS_MODE 6
 /** Voltage control register value that selects AVS mode. */
 #define CH224_AVS_MODE 7
+/** Supply type field for an Augmented Power Data Object. */
+#define CH224_PDO_SUPPLY_TYPE_AUGMENTED 3
+/** Augmented Power Data Object type field for PPS. */
+#define CH224_APDO_TYPE_PPS 0
 
 /**************************************************************************/
 /*!
@@ -172,6 +176,38 @@ bool Adafruit_CH224::getMaxCurrent(float* amps) {
 
 /**************************************************************************/
 /*!
+    @brief Checks whether the USB PD source advertises a PPS APDO.
+    @return True when PPS appears in the source capabilities. A failed I2C read
+    also returns false.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::isPPSAvailable() {
+  uint8_t powerData[CH224_POWER_DATA_LENGTH];
+  uint8_t objectCount = 0;
+  if (!readSourceCapabilities(powerData, &objectCount)) {
+    return false;
+  }
+
+  for (uint8_t index = 0; index < objectCount; index++) {
+    uint8_t offset = 2 + index * 4;
+    uint32_t pdo = powerData[offset];
+    pdo |= (uint32_t)powerData[offset + 1] << 8;
+    pdo |= (uint32_t)powerData[offset + 2] << 16;
+    pdo |= (uint32_t)powerData[offset + 3] << 24;
+
+    uint8_t supplyType = (pdo >> 30) & 0x03;
+    uint8_t apdoType = (pdo >> 28) & 0x03;
+    if (supplyType == CH224_PDO_SUPPLY_TYPE_AUGMENTED &&
+        apdoType == CH224_APDO_TYPE_PPS) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**************************************************************************/
+/*!
     @brief Checks whether the USB PD source advertises a fixed voltage.
     @param voltage Fixed voltage selection to find.
     @return True when the requested fixed voltage appears in the source
@@ -235,13 +271,8 @@ bool Adafruit_CH224::findFixedSourceCapability(ch224_voltage_t voltage,
   }
 
   uint8_t powerData[CH224_POWER_DATA_LENGTH];
-  if (!readPowerData(powerData)) {
-    return false;
-  }
-
-  uint16_t messageHeader = powerData[0] | ((uint16_t)powerData[1] << 8);
-  uint8_t objectCount = (messageHeader >> 12) & 0x07;
-  if (objectCount == 0 || (2 + objectCount * 4) > CH224_POWER_DATA_LENGTH) {
+  uint8_t objectCount = 0;
+  if (!readSourceCapabilities(powerData, &objectCount)) {
     return false;
   }
 
@@ -266,6 +297,25 @@ bool Adafruit_CH224::findFixedSourceCapability(ch224_voltage_t voltage,
   }
 
   return false;
+}
+
+/**************************************************************************/
+/*!
+    @brief Reads and validates the USB PD Source_Capabilities message.
+    @param powerData Buffer that receives the complete power-data register area.
+    @param objectCount Pointer that receives the number of valid PDOs.
+    @return True when the message and its PDO count were read successfully.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::readSourceCapabilities(uint8_t* powerData,
+                                            uint8_t* objectCount) {
+  if (!powerData || !objectCount || !readPowerData(powerData)) {
+    return false;
+  }
+
+  uint16_t messageHeader = powerData[0] | ((uint16_t)powerData[1] << 8);
+  *objectCount = (messageHeader >> 12) & 0x07;
+  return *objectCount > 0 && (2 + *objectCount * 4) <= CH224_POWER_DATA_LENGTH;
 }
 
 /**************************************************************************/
