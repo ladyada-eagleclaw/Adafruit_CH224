@@ -1,4 +1,23 @@
-#include <Wire.h>
+#include <Adafruit_CH224.h>
+
+Adafruit_CH224A ch224;
+bool ch224Ready = false;
+
+void clearOutputsAndHalt(const char *message) {
+  Serial.println(message);
+
+  if (ch224Ready) {
+    if (ch224.setVoltage(CH224_VOLTAGE_5V)) {
+      Serial.println("Returned CH224A request to 5 V");
+    } else {
+      Serial.println("Could not return CH224A request to 5 V");
+    }
+  }
+
+  while (1) {
+    delay(10);
+  }
+}
 
 void setup() {
   Serial.begin(115200);
@@ -6,17 +25,36 @@ void setup() {
     delay(10);
   }
 
-  Wire.begin();
-  Serial.println("Metro Mini I2C scan");
-}
+  Serial.println("CH224A hardware test 00_i2c_scan");
 
-void loop() {
+  if (!ch224.begin()) {
+    clearOutputsAndHalt("CH224A begin failed");
+  }
+  ch224Ready = true;
+  Serial.println("CH224A begin succeeded");
+
+  if (!ch224.setVoltage(CH224_VOLTAGE_5V)) {
+    clearOutputsAndHalt("Initial 5 V request failed");
+  }
+  Serial.println("Initial 5 V request succeeded");
+  Serial.println();
+
   uint8_t deviceCount = 0;
+  bool foundCH224AAddress = false;
+  bool foundCH224QAlias = false;
 
   Serial.print("SDA level: ");
-  Serial.println(digitalRead(SDA) ? "HIGH" : "LOW");
+  if (digitalRead(SDA)) {
+    Serial.println("HIGH");
+  } else {
+    Serial.println("LOW");
+  }
   Serial.print("SCL level: ");
-  Serial.println(digitalRead(SCL) ? "HIGH" : "LOW");
+  if (digitalRead(SCL)) {
+    Serial.println("HIGH");
+  } else {
+    Serial.println("LOW");
+  }
 
   Serial.println("Scanning I2C addresses...");
   for (uint8_t address = 1; address < 127; address++) {
@@ -30,16 +68,31 @@ void loop() {
       }
       Serial.println(address, HEX);
       deviceCount++;
+
+      if (address == CH224A_I2CADDR_DEFAULT) {
+        foundCH224AAddress = true;
+      }
+      if (address == CH224Q_I2CADDR_DEFAULT) {
+        foundCH224QAlias = true;
+      }
     }
   }
 
-  if (deviceCount == 0) {
-    Serial.println("No I2C devices found");
-  } else {
-    Serial.print("I2C scan succeeded, device count: ");
-    Serial.println(deviceCount);
+  if (!foundCH224AAddress) {
+    clearOutputsAndHalt("CH224A address 0x23 was not found");
+  }
+  Serial.println("CH224A address 0x23 found");
+
+  if (foundCH224QAlias) {
+    Serial.println("Address 0x22 also acknowledged; this is a known CH224A "
+                   "alias, not proof of CH224Q silicon");
   }
 
+  Serial.print("I2C scan succeeded, device count: ");
+  Serial.println(deviceCount);
+
   Serial.println();
-  delay(2000);
+  Serial.println("00_i2c_scan passed");
 }
+
+void loop() { delay(1000); }
