@@ -3,6 +3,30 @@
 Adafruit_CH224 ch224;
 bool ch224Ready = false;
 
+const uint16_t voutSensePin = A0;
+const float dividerTopOhms = 10000.0;
+const float dividerBottomOhms = 470.0;
+const float voltageTolerance = 1.0;
+
+float readVoutVoltage() {
+  uint32_t adcTotal = 0;
+  const uint8_t sampleCount = 16;
+
+  for (uint8_t sample = 0; sample < sampleCount; sample++) {
+    adcTotal += analogRead(voutSensePin);
+    delay(5);
+  }
+
+  uint16_t adcValue = adcTotal / sampleCount;
+  float senseVolts = map(adcValue, 0, 1023, 0, 5000) / 1000.0;
+  float dividerRatio =
+      (dividerTopOhms + dividerBottomOhms) / dividerBottomOhms;
+
+  Serial.print("A0 averaged ADC reading: ");
+  Serial.println(adcValue);
+  return senseVolts * dividerRatio;
+}
+
 void clearOutputsAndHalt(const char *message) {
   Serial.println(message);
 
@@ -55,6 +79,16 @@ void requestAndCheck(ch224_voltage_t setting, float volts,
     clearOutputsAndHalt("Negotiated current does not match source capability");
   }
   Serial.println("Negotiated current matches source capability");
+
+  float measuredVolts = readVoutVoltage();
+  Serial.print("Measured VOUT: ");
+  Serial.print(measuredVolts, 2);
+  Serial.println(" V");
+
+  if (abs(measuredVolts - volts) > voltageTolerance) {
+    clearOutputsAndHalt("Measured VOUT does not match requested voltage");
+  }
+  Serial.println("Measured VOUT matches requested voltage");
   Serial.println();
 }
 
@@ -74,6 +108,8 @@ void setup() {
     }
   }
   ch224Ready = true;
+
+  pinMode(voutSensePin, INPUT);
 
   Serial.print("Begin succeeded at I2C address 0x");
   Serial.println(address, HEX);
