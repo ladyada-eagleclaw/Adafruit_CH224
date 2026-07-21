@@ -1,6 +1,9 @@
 #include <Adafruit_CH224.h>
 
-Adafruit_CH224 ch224;
+Adafruit_CH224 detector;
+Adafruit_CH224A ch224a;
+Adafruit_CH224Q ch224q;
+Adafruit_CH224 *ch224 = NULL;
 
 void printActivity(bool active) {
   if (active) {
@@ -36,27 +39,52 @@ void setup() {
 
   Serial.println("Adafruit CH224 test");
 
-  if (!ch224.begin()) {
+  if (!detector.begin()) {
     Serial.println("Could not find CH224. Check wiring and I2C address.");
     while (1) {
       delay(10);
     }
   }
 
-  Serial.println("CH224 found");
-  Serial.print("Variant: ");
-  printVariant(ch224.getVariant());
+  Serial.print("Auto-detected variant: ");
+  printVariant(detector.getVariant());
+
+  if (detector.getVariant() == CH224_VARIANT_A) {
+    if (!ch224a.begin()) {
+      Serial.println("Could not initialize the CH224A subclass.");
+      while (1) {
+        delay(10);
+      }
+    }
+    ch224 = &ch224a;
+  } else if (detector.getVariant() == CH224_VARIANT_Q) {
+    if (!ch224q.begin()) {
+      Serial.println("Could not initialize the CH224Q subclass.");
+      while (1) {
+        delay(10);
+      }
+    }
+    ch224 = &ch224q;
+  } else {
+    Serial.println("Detected an unknown CH224 variant.");
+    while (1) {
+      delay(10);
+    }
+  }
+
+  Serial.print("Initialized driver: ");
+  printVariant(ch224->getVariant());
   Serial.print("I2C address: 0x");
-  Serial.println(ch224.getI2CAddress(), HEX);
+  Serial.println(ch224->getI2CAddress(), HEX);
   Serial.print("PPS control: ");
-  printAvailability(ch224.supportsPPS());
+  printAvailability(ch224->supportsPPS());
   Serial.print("AVS control: ");
-  printAvailability(ch224.supportsAVS());
+  printAvailability(ch224->supportsAVS());
 }
 
 void loop() {
   uint8_t status = 0;
-  if (!ch224.getStatus(&status)) {
+  if (!ch224->getStatus(&status)) {
     Serial.println("Could not read CH224 status");
     delay(1000);
     return;
@@ -79,16 +107,16 @@ void loop() {
 
   Serial.println("Power mode availability:");
   Serial.print("  Fixed PD PDOs: ");
-  printAvailability(ch224.isVoltageAvailable(CH224_VOLTAGE_5V));
+  printAvailability(ch224->isVoltageAvailable(CH224_VOLTAGE_5V));
   Serial.print("  PPS APDO reported: ");
-  printAvailability(ch224.isPPSAvailable());
+  printAvailability(ch224->isPPSAvailable());
   Serial.print("  EPR source: ");
   printAvailability(status & CH224_PROTOCOL_EPR_AVAILABLE);
   Serial.print("  AVS source reported: ");
-  printAvailability(ch224.isAVSAvailable());
+  printAvailability(ch224->isAVSAvailable());
 
   float amps = 0.0;
-  if (ch224.getMaxCurrent(&amps)) {
+  if (ch224->getMaxCurrent(&amps)) {
     Serial.print("Maximum negotiated current: ");
     Serial.print(amps, 2);
     Serial.println(" A");
@@ -107,7 +135,7 @@ void loop() {
     Serial.print(" V: ");
 
     float availableAmps = 0.0;
-    if (ch224.getAvailableCurrent(fixedVoltages[index], &availableAmps)) {
+    if (ch224->getAvailableCurrent(fixedVoltages[index], &availableAmps)) {
       Serial.print("available at ");
       Serial.print(availableAmps, 2);
       Serial.println(" A");
