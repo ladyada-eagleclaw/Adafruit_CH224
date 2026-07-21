@@ -43,20 +43,152 @@ Adafruit_CH224::Adafruit_CH224() {}
 
 /**************************************************************************/
 /*!
-    @brief Initializes the I2C connection to the CH224.
-    @param i2c_addr The 7-bit I2C address. Use 0x23 for CH224A or 0x22 for
-    CH224Q.
+    @brief Auto-detects and initializes a CH224A or CH224Q.
+    @param theWire Pointer to the TwoWire interface to use.
+    @return True when a CH224 acknowledges at an official I2C address.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::begin(TwoWire* theWire) {
+  detected_variant = CH224_VARIANT_UNKNOWN;
+  detected_address = 0;
+
+  // Check the CH224A address first because tested CH224A silicon may also
+  // acknowledge the CH224Q address.
+  if (beginAtAddress(CH224A_I2CADDR_DEFAULT, theWire)) {
+    detected_variant = CH224_VARIANT_A;
+    return true;
+  }
+
+  if (beginAtAddress(CH224Q_I2CADDR_DEFAULT, theWire)) {
+    detected_variant = CH224_VARIANT_Q;
+    return true;
+  }
+
+  return false;
+}
+
+/**************************************************************************/
+/*!
+    @brief Initializes a CH224 at a specified I2C address.
+    @param i2c_addr The 7-bit I2C address.
     @param theWire Pointer to the TwoWire interface to use.
     @return True when the CH224 acknowledges on the I2C bus.
 */
 /**************************************************************************/
 bool Adafruit_CH224::begin(uint8_t i2c_addr, TwoWire* theWire) {
+  detected_variant = CH224_VARIANT_UNKNOWN;
+  detected_address = 0;
+
+  if (!beginAtAddress(i2c_addr, theWire)) {
+    return false;
+  }
+
+  if (i2c_addr == CH224A_I2CADDR_DEFAULT) {
+    detected_variant = CH224_VARIANT_A;
+  } else if (i2c_addr == CH224Q_I2CADDR_DEFAULT) {
+    Adafruit_I2CDevice ch224aProbe(CH224A_I2CADDR_DEFAULT, theWire);
+    if (ch224aProbe.begin()) {
+      detected_variant = CH224_VARIANT_A;
+    } else {
+      detected_variant = CH224_VARIANT_Q;
+    }
+  }
+
+  return true;
+}
+
+/**************************************************************************/
+/*!
+    @brief Initializes a CH224A at its official address.
+    @param theWire Pointer to the TwoWire interface to use.
+    @return True only when conservative auto-detection identifies a CH224A.
+*/
+/**************************************************************************/
+bool Adafruit_CH224A::begin(TwoWire* theWire) {
+  if (!Adafruit_CH224::begin(theWire)) {
+    return false;
+  }
+
+  return getVariant() == CH224_VARIANT_A;
+}
+
+/**************************************************************************/
+/*!
+    @brief Initializes a CH224Q at its official address.
+    @param theWire Pointer to the TwoWire interface to use.
+    @return True only when conservative auto-detection identifies a CH224Q.
+*/
+/**************************************************************************/
+bool Adafruit_CH224Q::begin(TwoWire* theWire) {
+  if (!Adafruit_CH224::begin(theWire)) {
+    return false;
+  }
+
+  return getVariant() == CH224_VARIANT_Q;
+}
+
+/**************************************************************************/
+/*!
+    @brief Initializes the I2C device at one address.
+    @param i2c_addr The 7-bit I2C address.
+    @param theWire Pointer to the TwoWire interface to use.
+    @return True when a device acknowledges at the address.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::beginAtAddress(uint8_t i2c_addr, TwoWire* theWire) {
   if (i2c_dev) {
     delete i2c_dev;
   }
 
   i2c_dev = new Adafruit_I2CDevice(i2c_addr, theWire);
-  return i2c_dev->begin();
+  if (!i2c_dev->begin()) {
+    delete i2c_dev;
+    i2c_dev = NULL;
+    return false;
+  }
+
+  detected_address = i2c_addr;
+  return true;
+}
+
+/**************************************************************************/
+/*!
+    @brief Returns the detected or explicitly selected CH224 variant.
+    @return CH224 silicon variant.
+*/
+/**************************************************************************/
+ch224_variant_t Adafruit_CH224::getVariant() const {
+  return detected_variant;
+}
+
+/**************************************************************************/
+/*!
+    @brief Returns the active 7-bit I2C address.
+    @return I2C address, or zero before a successful begin().
+*/
+/**************************************************************************/
+uint8_t Adafruit_CH224::getI2CAddress() const {
+  return detected_address;
+}
+
+/**************************************************************************/
+/*!
+    @brief Checks whether the selected variant supports PPS registers.
+    @return True for CH224Q.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::supportsPPS() const {
+  return detected_variant == CH224_VARIANT_Q;
+}
+
+/**************************************************************************/
+/*!
+    @brief Checks whether the selected variant supports AVS registers.
+    @return True for CH224Q.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::supportsAVS() const {
+  return detected_variant == CH224_VARIANT_Q;
 }
 
 /**************************************************************************/
@@ -108,12 +240,16 @@ bool Adafruit_CH224::setVoltage(ch224_voltage_t voltage) {
     @brief Requests a USB PD Programmable Power Supply voltage.
     @param volts Requested voltage in volts, from 3.3 V through 21.0 V. The
     value is rounded to the nearest 0.1 V.
-    @return True when the PPS voltage and mode were written successfully.
+    @return True when a CH224Q and source support PPS and the voltage and mode
+    were written successfully.
 */
 /**************************************************************************/
-bool Adafruit_CH224::setPPSVoltage(float volts) {
+bool Adafruit_CH224Q::setPPSVoltage(float volts) {
   if (isnan(volts) || volts < CH224_PPS_MIN_VOLTAGE ||
       volts > CH224_PPS_MAX_VOLTAGE) {
+    return false;
+  }
+  if (!supportsPPS() || !isPPSAvailable()) {
     return false;
   }
 
@@ -130,12 +266,16 @@ bool Adafruit_CH224::setPPSVoltage(float volts) {
     @brief Requests an Adjustable Voltage Supply voltage.
     @param volts Requested voltage in volts, from 5.0 V through 28.0 V. The
     value is rounded to the nearest 0.025 V.
-    @return True when the AVS voltage and mode were written successfully.
+    @return True when a CH224Q and source support AVS and the voltage and mode
+    were written successfully.
 */
 /**************************************************************************/
-bool Adafruit_CH224::setAVSVoltage(float volts) {
+bool Adafruit_CH224Q::setAVSVoltage(float volts) {
   if (isnan(volts) || volts < CH224_AVS_MIN_VOLTAGE ||
       volts > CH224_AVS_MAX_VOLTAGE) {
+    return false;
+  }
+  if (!supportsAVS() || !isAVSAvailable()) {
     return false;
   }
 
@@ -182,6 +322,10 @@ bool Adafruit_CH224::getMaxCurrent(float* amps) {
 */
 /**************************************************************************/
 bool Adafruit_CH224::isPPSAvailable() {
+  if (!supportsPPS()) {
+    return false;
+  }
+
   uint8_t powerData[CH224_POWER_DATA_LENGTH];
   uint8_t objectCount = 0;
   if (!readSourceCapabilities(powerData, &objectCount)) {
@@ -204,6 +348,17 @@ bool Adafruit_CH224::isPPSAvailable() {
   }
 
   return false;
+}
+
+/**************************************************************************/
+/*!
+    @brief Checks whether a CH224Q reports an AVS-capable source.
+    @return True when Q support is selected and the AVS-available status bit is
+    set. A failed I2C read also returns false.
+*/
+/**************************************************************************/
+bool Adafruit_CH224::isAVSAvailable() {
+  return supportsAVS() && isProtocolActive(CH224_PROTOCOL_AVS_AVAILABLE);
 }
 
 /**************************************************************************/

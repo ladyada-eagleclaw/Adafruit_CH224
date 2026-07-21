@@ -1,6 +1,6 @@
 #include <Adafruit_CH224.h>
 
-Adafruit_CH224 ch224;
+Adafruit_CH224A ch224;
 
 void setup() {
   Serial.begin(115200);
@@ -26,10 +26,9 @@ void setup() {
     }
   }
 
-  // Other examples:
+  // Other fixed-voltage example:
   // ch224.setVoltage(CH224_VOLTAGE_9V);
-  // ch224.setPPSVoltage(5.0);
-  // ch224.setAVSVoltage(15.0);
+  // PPS and AVS requests use the Adafruit_CH224Q subclass instead.
 
   Serial.println("Requested 5 V");
 }

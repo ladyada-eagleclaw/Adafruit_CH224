@@ -27,17 +27,15 @@ void setup() {
 
   Serial.println("CH224 hardware test 01_power_data");
 
-  uint8_t address = CH224A_I2CADDR_DEFAULT;
-  if (!ch224.begin(address)) {
-    address = CH224Q_I2CADDR_DEFAULT;
-    if (!ch224.begin(address)) {
-      clearOutputsAndHalt("CH224A/Q begin failed");
-    }
+  if (!ch224.begin()) {
+    clearOutputsAndHalt("CH224A/Q begin failed");
   }
   ch224Ready = true;
 
   Serial.print("Begin succeeded at I2C address 0x");
-  Serial.println(address, HEX);
+  Serial.println(ch224.getI2CAddress(), HEX);
+  Serial.print("Detected variant: CH224");
+  Serial.println(ch224.getVariant() == CH224_VARIANT_A ? "A" : "Q");
   Serial.println();
 
   uint8_t powerData[CH224_POWER_DATA_LENGTH];

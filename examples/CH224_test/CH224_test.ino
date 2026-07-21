@@ -18,6 +18,16 @@ void printAvailability(bool available) {
   }
 }
 
+void printVariant(ch224_variant_t variant) {
+  if (variant == CH224_VARIANT_A) {
+    Serial.println("CH224A");
+  } else if (variant == CH224_VARIANT_Q) {
+    Serial.println("CH224Q");
+  } else {
+    Serial.println("unknown");
+  }
+}
+
 void setup() {
   Serial.begin(115200);
   while (!Serial) {
@@ -26,8 +36,6 @@ void setup() {
 
   Serial.println("Adafruit CH224 test");
 
-  // CH224A uses the default 0x23 address. For CH224Q, use:
-  // ch224.begin(CH224Q_I2CADDR_DEFAULT)
   if (!ch224.begin()) {
     Serial.println("Could not find CH224. Check wiring and I2C address.");
     while (1) {
@@ -36,6 +44,14 @@ void setup() {
   }
 
   Serial.println("CH224 found");
+  Serial.print("Variant: ");
+  printVariant(ch224.getVariant());
+  Serial.print("I2C address: 0x");
+  Serial.println(ch224.getI2CAddress(), HEX);
+  Serial.print("PPS control: ");
+  printAvailability(ch224.supportsPPS());
+  Serial.print("AVS control: ");
+  printAvailability(ch224.supportsAVS());
 }
 
 void loop() {
@@ -64,12 +80,12 @@ void loop() {
   Serial.println("Power mode availability:");
   Serial.print("  Fixed PD PDOs: ");
   printAvailability(ch224.isVoltageAvailable(CH224_VOLTAGE_5V));
-  Serial.print("  PPS APDO: ");
+  Serial.print("  PPS APDO reported: ");
   printAvailability(ch224.isPPSAvailable());
   Serial.print("  EPR source: ");
   printAvailability(status & CH224_PROTOCOL_EPR_AVAILABLE);
-  Serial.print("  AVS source: ");
-  printAvailability(status & CH224_PROTOCOL_AVS_AVAILABLE);
+  Serial.print("  AVS source reported: ");
+  printAvailability(ch224.isAVSAvailable());
 
   float amps = 0.0;
   if (ch224.getMaxCurrent(&amps)) {

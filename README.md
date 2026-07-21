@@ -2,9 +2,11 @@
 
 This is the Adafruit Arduino library for the WCH CH224A and CH224Q I2C-controlled USB Power Delivery sink controllers.
 
-The CH224 can request fixed USB PD voltages, PPS voltages, and AVS voltages. It can also report active protocols and maximum available current, enumerate fixed-voltage and PPS source capabilities, report EPR and AVS availability, and provide raw USB PD source capability data.
+Both variants can request fixed USB PD voltages and report active protocols, current, and source capabilities. The CH224Q also supports PPS and AVS voltage requests.
 
-The CH224A uses I2C address `0x23`. The CH224Q uses I2C address `0x22`.
+Call `ch224.begin()` to probe the official CH224A address (`0x23`) first, then the CH224Q address (`0x22`). Some CH224A chips acknowledge both addresses and there is no silicon ID register, so a response at `0x23` is conservatively reported as an A. A response at only `0x22` is reported as a Q.
+
+Use the `Adafruit_CH224` base class with `getVariant()` and `getI2CAddress()` when the connected variant is not known. Use the `Adafruit_CH224A` or `Adafruit_CH224Q` subclass when the board's silicon is known. The base class contains the common fixed-PD and status API; programmable `setPPSVoltage()` and `setAVSVoltage()` calls exist only on `Adafruit_CH224Q` and require a compatible USB PD source.
 
 Adafruit invests time and resources providing this open source code. Please support Adafruit and open-source hardware by purchasing products from Adafruit!
 
