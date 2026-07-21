@@ -98,6 +98,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a94cdefd264a5190861dfde082e21757b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224.html#a94cdefd264a5190861dfde082e21757b">getMaxCurrent</a> (float *amps)</td></tr>
 <tr class="memdesc:a94cdefd264a5190861dfde082e21757b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the maximum current available for the negotiated PD voltage.  <a href="#a94cdefd264a5190861dfde082e21757b">More...</a><br /></td></tr>
 <tr class="separator:a94cdefd264a5190861dfde082e21757b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80df6cd1cc893ee085185c9b85ed213f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224.html#a80df6cd1cc893ee085185c9b85ed213f">isPPSAvailable</a> ()</td></tr>
+<tr class="memdesc:a80df6cd1cc893ee085185c9b85ed213f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the USB PD source advertises a PPS APDO.  <a href="#a80df6cd1cc893ee085185c9b85ed213f">More...</a><br /></td></tr>
+<tr class="separator:a80df6cd1cc893ee085185c9b85ed213f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca15269787a7481ed428258ee65688a9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224.html#aca15269787a7481ed428258ee65688a9">isVoltageAvailable</a> (<a class="el" href="_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086e">ch224_voltage_t</a> voltage)</td></tr>
 <tr class="memdesc:aca15269787a7481ed428258ee65688a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the USB PD source advertises a fixed voltage.  <a href="#aca15269787a7481ed428258ee65688a9">More...</a><br /></td></tr>
 <tr class="separator:aca15269787a7481ed428258ee65688a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,6 +311,26 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True when the current register was read successfully. </dd></dl>
+
+</div>
+</div>
+<a id="a80df6cd1cc893ee085185c9b85ed213f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a80df6cd1cc893ee085185c9b85ed213f">&#9670;&nbsp;</a></span>isPPSAvailable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_CH224::isPPSAvailable </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks whether the USB PD source advertises a PPS APDO. </p>
+<dl class="section return"><dt>Returns</dt><dd>True when PPS appears in the source capabilities. A failed I2C read also returns false. </dd></dl>
 
 </div>
 </div>

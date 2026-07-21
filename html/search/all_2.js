@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['ch224_5fapdo_5ftype_5fpps',['CH224_APDO_TYPE_PPS',['../_adafruit___c_h224_8cpp.html#adee70eebe41746b9d89f323ae560943e',1,'Adafruit_CH224.cpp']]],
   ['ch224_5favs_5fhigh_5fregister',['CH224_AVS_HIGH_REGISTER',['../_adafruit___c_h224_8h.html#ade7ef1eb2812a9c4893c86f16eacd3c1',1,'Adafruit_CH224.h']]],
   ['ch224_5favs_5flow_5fregister',['CH224_AVS_LOW_REGISTER',['../_adafruit___c_h224_8h.html#a1537d42f9da5c2b5aa1ac4c478ffa2c0',1,'Adafruit_CH224.h']]],
   ['ch224_5favs_5fmax_5fvoltage',['CH224_AVS_MAX_VOLTAGE',['../_adafruit___c_h224_8h.html#a6e054f7028207df3cfbaa1d8cd4b0758',1,'Adafruit_CH224.h']]],
@@ -7,6 +8,7 @@ var searchData=
   ['ch224_5favs_5fmode',['CH224_AVS_MODE',['../_adafruit___c_h224_8cpp.html#a35d89971c885b552b97584b44910232a',1,'Adafruit_CH224.cpp']]],
   ['ch224_5fcurrent_5fregister',['CH224_CURRENT_REGISTER',['../_adafruit___c_h224_8h.html#a69475e625650effe832cc1eeb8a3071d',1,'Adafruit_CH224.h']]],
   ['ch224_5fi2caddr_5fdefault',['CH224_I2CADDR_DEFAULT',['../_adafruit___c_h224_8h.html#afe6b7dc9e5347229a23ae0dcc82ca39f',1,'Adafruit_CH224.h']]],
+  ['ch224_5fpdo_5fsupply_5ftype_5faugmented',['CH224_PDO_SUPPLY_TYPE_AUGMENTED',['../_adafruit___c_h224_8cpp.html#a06195f47e4532efba4d4aa69a3f29a7a',1,'Adafruit_CH224.cpp']]],
   ['ch224_5fpower_5fdata_5flength',['CH224_POWER_DATA_LENGTH',['../_adafruit___c_h224_8h.html#ac6f6b40118afff730294d49c38b70918',1,'Adafruit_CH224.h']]],
   ['ch224_5fpower_5fdata_5fregister',['CH224_POWER_DATA_REGISTER',['../_adafruit___c_h224_8h.html#ac43db723c0b427df9b8d6321c6a1d45e',1,'Adafruit_CH224.h']]],
   ['ch224_5fpps_5fmax_5fvoltage',['CH224_PPS_MAX_VOLTAGE',['../_adafruit___c_h224_8h.html#a811638f31f6c440c5216d579bca8ab0e',1,'Adafruit_CH224.h']]],
