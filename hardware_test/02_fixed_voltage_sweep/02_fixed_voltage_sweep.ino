@@ -5,7 +5,7 @@ bool ch224Ready = false;
 
 const uint16_t voutSensePin = A0;
 const float dividerTopOhms = 10000.0;
-const float dividerBottomOhms = 470.0;
+const float dividerBottomOhms = 560.0;
 const float voltageTolerance = 1.0;
 
 float readVoutVoltage() {
@@ -43,11 +43,17 @@ void clearOutputsAndHalt(const char *message) {
   }
 }
 
-void requestAndCheck(ch224_voltage_t setting, float volts,
-                     float expectedAmps) {
+void requestAndCheck(ch224_voltage_t setting, float volts) {
+  float expectedAmps = 0.0;
+  if (!ch224.getAvailableCurrent(setting, &expectedAmps)) {
+    clearOutputsAndHalt("Requested voltage is not advertised by the source");
+  }
+
   Serial.print("Requesting ");
   Serial.print(volts, 0);
-  Serial.println(" V");
+  Serial.print(" V at up to ");
+  Serial.print(expectedAmps, 2);
+  Serial.println(" A");
 
   if (!ch224.setVoltage(setting)) {
     clearOutputsAndHalt("Voltage request failed");
@@ -115,11 +121,11 @@ void setup() {
   Serial.println(address, HEX);
   Serial.println();
 
-  requestAndCheck(CH224_VOLTAGE_5V, 5.0, 3.0);
-  requestAndCheck(CH224_VOLTAGE_9V, 9.0, 2.5);
-  requestAndCheck(CH224_VOLTAGE_15V, 15.0, 1.5);
-  requestAndCheck(CH224_VOLTAGE_20V, 20.0, 1.25);
-  requestAndCheck(CH224_VOLTAGE_5V, 5.0, 3.0);
+  requestAndCheck(CH224_VOLTAGE_5V, 5.0);
+  requestAndCheck(CH224_VOLTAGE_9V, 9.0);
+  requestAndCheck(CH224_VOLTAGE_15V, 15.0);
+  requestAndCheck(CH224_VOLTAGE_20V, 20.0);
+  requestAndCheck(CH224_VOLTAGE_5V, 5.0);
 
   Serial.println("02_fixed_voltage_sweep passed");
 }
