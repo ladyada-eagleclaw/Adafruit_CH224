@@ -98,6 +98,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a94cdefd264a5190861dfde082e21757b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224.html#a94cdefd264a5190861dfde082e21757b">getMaxCurrent</a> (float *amps)</td></tr>
 <tr class="memdesc:a94cdefd264a5190861dfde082e21757b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the maximum current available for the negotiated PD voltage.  <a href="#a94cdefd264a5190861dfde082e21757b">More...</a><br /></td></tr>
 <tr class="separator:a94cdefd264a5190861dfde082e21757b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca15269787a7481ed428258ee65688a9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224.html#aca15269787a7481ed428258ee65688a9">isVoltageAvailable</a> (<a class="el" href="_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086e">ch224_voltage_t</a> voltage)</td></tr>
+<tr class="memdesc:aca15269787a7481ed428258ee65688a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the USB PD source advertises a fixed voltage.  <a href="#aca15269787a7481ed428258ee65688a9">More...</a><br /></td></tr>
+<tr class="separator:aca15269787a7481ed428258ee65688a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00f358650d9a661ef5786396398e8bd6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224.html#a00f358650d9a661ef5786396398e8bd6">getAvailableCurrent</a> (<a class="el" href="_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086e">ch224_voltage_t</a> voltage, float *amps)</td></tr>
+<tr class="memdesc:a00f358650d9a661ef5786396398e8bd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the advertised current for a fixed USB PD source voltage.  <a href="#a00f358650d9a661ef5786396398e8bd6">More...</a><br /></td></tr>
+<tr class="separator:a00f358650d9a661ef5786396398e8bd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8254af614f7ecb8e73c8ff9730f597d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___c_h224.html#a8254af614f7ecb8e73c8ff9730f597d8">readPowerData</a> (uint8_t *data, size_t length=<a class="el" href="_adafruit___c_h224_8h.html#ac6f6b40118afff730294d49c38b70918">CH224_POWER_DATA_LENGTH</a>)</td></tr>
 <tr class="memdesc:a8254af614f7ecb8e73c8ff9730f597d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads raw USB PD source capability bytes.  <a href="#a8254af614f7ecb8e73c8ff9730f597d8">More...</a><br /></td></tr>
 <tr class="separator:a8254af614f7ecb8e73c8ff9730f597d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -302,6 +308,71 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True when the current register was read successfully. </dd></dl>
+
+</div>
+</div>
+<a id="aca15269787a7481ed428258ee65688a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca15269787a7481ed428258ee65688a9">&#9670;&nbsp;</a></span>isVoltageAvailable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_CH224::isVoltageAvailable </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086e">ch224_voltage_t</a>&#160;</td>
+          <td class="paramname"><em>voltage</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks whether the USB PD source advertises a fixed voltage. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">voltage</td><td>Fixed voltage selection to find. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the requested fixed voltage appears in the source capabilities. A failed I2C read also returns false. </dd></dl>
+
+</div>
+</div>
+<a id="a00f358650d9a661ef5786396398e8bd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00f358650d9a661ef5786396398e8bd6">&#9670;&nbsp;</a></span>getAvailableCurrent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_CH224::getAvailableCurrent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="_adafruit___c_h224_8h.html#a95de0d08397a314e474ab5d8c88e086e">ch224_voltage_t</a>&#160;</td>
+          <td class="paramname"><em>voltage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float *&#160;</td>
+          <td class="paramname"><em>amps</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads the advertised current for a fixed USB PD source voltage. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">voltage</td><td>Fixed voltage selection to find. </td></tr>
+    <tr><td class="paramname">amps</td><td>Pointer that receives the advertised current in amperes. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True when the requested fixed voltage appears in the source capabilities and its current was returned. </dd></dl>
 
 </div>
 </div>
